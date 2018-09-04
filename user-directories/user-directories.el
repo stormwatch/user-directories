@@ -114,11 +114,13 @@ Find which are sensible names for the user directories."
 	 (lib (concat "user-directories-" os)))
     ;; One either finds the os specific libraries or uses the default.
     (if (null (locate-library lib))
-	(setup-user-directories-default)
+				(setup-user-directories-default)
       (progn
-	;; Load the library and call the setup function.
-	(load-library lib)
-	(funcall (intern (concat "setup-user-directories-" os)))))))
+				;; Load the library and call the setup function.
+				(load-library lib)
+				;; Commented next funcall so we don't force the assignment
+				;; (funcall (intern (concat "setup-user-directories-" os)))
+				))))
 
 
 (setup-user-directories)

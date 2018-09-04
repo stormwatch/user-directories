@@ -83,9 +83,13 @@ Uses the binary 'xdg-user-dir' if available."
       (let ((key (upcase (replace-regexp-in-string ":" "" (symbol-name type)))))
         (substring (shell-command-to-string (concat "xdg-user-dir " key)) 0 -1))))
 
+(defun xdg-user-dir-assing-visible-directories ()
+	"Assign the user visible directories as listed in xdg-user-dir-directory-defaults"
+  (cl-loop for (type default) on xdg-user-dir-directory-defaults by (function cddr) do
+					 (set-user-directory type (or (xdg-user-dir type) (expand-file-name default)))))
 
 (defun xdg-user-dir-assign-directories ()
-  "Assign the XDG user directories.
+  "Assign all the XDG user directories.
 
 Uses the tool ’xdg-user-dir’ if available."
   (let ((config-dir (or (getenv "XDG_CONFIG_HOME") (expand-file-name "~/.config/")))
@@ -101,10 +105,8 @@ Uses the tool ’xdg-user-dir’ if available."
     ;; Set the user Lisp directories, adding them and their subdirs to `load-path'.
     ;; Create them if needed.
     (setup-user-lisp-directories))
-
-  ;; Assign all the user visible directories.
-  (cl-loop for (type default) on xdg-user-dir-directory-defaults by (function cddr) do
-     (set-user-directory type (or (xdg-user-dir type) (expand-file-name default)))))
+	(xdg-user-dir-assign-visible-directories)
+)
 
 
 (provide 'xdg-user-dir)
